@@ -4,6 +4,7 @@ from project.models import db_session
 from project.services.files import FilesService
 from sqlalchemy import literal_column
 
+
 files_bp = Blueprint('files_bp', __name__, url_prefix='/files')
 
 
@@ -13,7 +14,7 @@ def file_upload():
     mime = file.mimetype
     fs = FilesService()
     new_filename = fs.upload(file)
-    file_record = Files.insert().values(dist='http://localhost:5001/'+new_filename, mimetype=mime).returning(literal_column('*'))
+    file_record = Files.insert().values(dist='http://localhost:5001/'+new_filename.replace('\\', '/'), mimetype=mime).returning(literal_column('*'))
     result = db_session.execute(file_record)
     db_session.commit()
     return jsonify(dict(result.first()))
